@@ -134,24 +134,24 @@ public:
             if (termArray[i].getCoef() == 0) continue; // 忽略係數為零的項
 
             if (!firstTerm && termArray[i].getCoef() > 0) {
-                cout << " + ";
+                cout << " + "; // 正常項目之間加上 " + "
             }
 
             if (termArray[i].getCoef() < 0) {
-                cout << termArray[i].getCoef();
+                cout << termArray[i].getCoef(); // 直接顯示負數的係數
             } else if (firstTerm) {
-                cout << termArray[i].getCoef();
+                cout << termArray[i].getCoef(); // 第一項顯示時不加 "+" 或 "-"
             } else {
-                cout << "+" << termArray[i].getCoef();
+                cout << termArray[i].getCoef(); // 其他項顯示時直接顯示係數
             }
 
             if (termArray[i].getExp() > 0) {
-                cout << "x^" << termArray[i].getExp();
+                cout << "x^" << termArray[i].getExp(); // 如果指數大於 0，就顯示 x^指數
             }
-            firstTerm = false;
+            firstTerm = false; // 之後的項不再是第一項
         }
         if (firstTerm) {
-            cout << "0"; // 如果多項式全為 0
+            cout << "0"; // 如果多項式全為 0，顯示 "0"
         }
         cout << endl;
     }
