@@ -17,6 +17,9 @@ public:
 
 // Polynomial 類別定義
 class Polynomial {
+    friend ostream& operator<<(ostream& os, const Polynomial& p);
+    friend istream& operator>>(istream& is, Polynomial& p);
+
 private:
     Term* termArray; // 存放多項式項目
     int capacity;    // 最大容量
@@ -33,7 +36,7 @@ public:
         delete[] termArray;
     }
 
-    // 自定義賦值運算符
+    // 自定義賦值運算子
     Polynomial& operator=(const Polynomial& poly) {
         if (this == &poly) { // 防止自我賦值
             return *this;
@@ -113,49 +116,6 @@ public:
         return result;
     }
 
-    // 輸入多項式
-    void input() {
-        int n;
-        cout << "Enter the number of terms: ";
-        cin >> n;
-        for (int i = 0; i < n; i++) {
-            float coef;
-            int exp;
-            cout << "Enter coefficient and exponent for term " << i + 1 << ": ";
-            cin >> coef >> exp;
-            addTerm(coef, exp);
-        }
-    }
-
-    // 輸出多項式
-    void output() const {
-        bool firstTerm = true;
-        for (int i = 0; i < terms; i++) {
-            if (termArray[i].getCoef() == 0) continue; // 忽略係數為零的項
-
-            if (!firstTerm && termArray[i].getCoef() > 0) {
-                cout << " + "; // 正常項目之間加上 " + "
-            }
-
-            if (termArray[i].getCoef() < 0) {
-                cout << termArray[i].getCoef(); // 直接顯示負數的係數
-            } else if (firstTerm) {
-                cout << termArray[i].getCoef(); // 第一項顯示時不加 "+" 或 "-"
-            } else {
-                cout << termArray[i].getCoef(); // 其他項顯示時直接顯示係數
-            }
-
-            if (termArray[i].getExp() > 0) {
-                cout << "x^" << termArray[i].getExp(); // 如果指數大於 0，就顯示 x^指數
-            }
-            firstTerm = false; // 之後的項不再是第一項
-        }
-        if (firstTerm) {
-            cout << "0"; // 如果多項式全為 0，顯示 "0"
-        }
-        cout << endl;
-    }
-
 private:
     // 添加或合併項
     void addOrCombine(float coef, int exp) {
@@ -194,31 +154,72 @@ private:
     }
 };
 
+// 重設 >> 運算子
+istream& operator>>(istream& is, Polynomial& p) {
+    int n;
+    cout << "Enter the number of terms: ";
+    is >> n;
+    for (int i = 0; i < n; ++i) {
+        float coef;
+        int exp;
+        cout << "Enter coefficient and exponent for term " << i + 1 << ": ";
+        is >> coef >> exp;
+        p.addTerm(coef, exp);
+    }
+    return is;
+}
+
+// 重設 << 運算子
+ostream& operator<<(ostream& os, const Polynomial& p) {
+    bool firstTerm = true;
+    for (int i = 0; i < p.terms; ++i) {
+        if (p.termArray[i].getCoef() == 0) continue;
+
+        if (!firstTerm && p.termArray[i].getCoef() > 0) {
+            os << " + ";
+        }
+
+        if (p.termArray[i].getCoef() < 0) {
+            os << p.termArray[i].getCoef();
+        } else if (firstTerm) {
+            os << p.termArray[i].getCoef();
+        } else {
+            os << p.termArray[i].getCoef();
+        }
+
+        if (p.termArray[i].getExp() > 0) {
+            os << "x^" << p.termArray[i].getExp();
+        }
+
+        firstTerm = false;
+    }
+    if (firstTerm) {
+        os << "0";
+    }
+    return os;
+}
+
 int main() {
     Polynomial poly1, poly2, result;
 
     // 輸入多項式
     cout << "Enter the first polynomial:" << endl;
-    poly1.input();
+    cin >> poly1;
 
     cout << "Enter the second polynomial:" << endl;
-    poly2.input();
+    cin >> poly2;
 
     // 輸出多項式
-    cout << "First Polynomial: ";
-    poly1.output();
-    cout << "Second Polynomial: ";
-    poly2.output();
+    cout << "First Polynomial: " << poly1 << endl;
+    cout << "Second Polynomial: " << poly2 << endl;
 
     // 計算和
     result = poly1.Add(poly2);
-    cout << "Sum: ";
-    result.output();
+    cout << "Sum: " << result << endl;
 
     // 計算積
     result = poly1.Mult(poly2);
-    cout << "Product: ";
-    result.output();
+    cout << "Product: " << result << endl;
 
     // 計算指定值的結果
     float value;
